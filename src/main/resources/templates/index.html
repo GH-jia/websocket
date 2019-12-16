@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello WebSocket</title>
+
+    <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.js"></script>
+
+</head>
+<script>
+    var stompClient;
+    function connect() {
+        var socket = new SockJS('/gs-guide-websocket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/greetings', function (greeting) {
+                // showGreeting(JSON.parse(greeting.body).content);
+                console.log(JSON.parse(greeting.body).content);
+            });
+        });
+    }
+    function send() {
+        stompClient.send("/app/hello", {}, JSON.stringify({'name': 'hj'}));
+    }
+</script>
+<body>
+
+<div>
+    <botton id="connect"  onclick="connect()">connect</botton>
+    <botton id="send"  onclick="send()">send</botton>
+</div>
+</body>
+</html>
